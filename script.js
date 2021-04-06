@@ -128,12 +128,15 @@ window.onload = () => {  // window.onload => Permet de lancer la fonction lorsqu
         ctx.fillRect(x, y, blockSize, blockSize);
     }
 
-    function Snake(body, direction){       // Cette fonction prend le corp du serpent. | Ceci est le constructeur de la fonction
-        this.body = body;       // Le serpent ç un corp qui prend le corp que je fournis à ma fonction constructeur.
-        this.direction = direction;
-        this.ateApple = false;
+    class Snake {
 
-        this.draw = function(){  // Va déssiner le corp du serpent.
+        constructor(body, direction){   // Cette fonction prend le corp du serpent. | Ceci est le constructeur de la fonction
+            this.body = body;       // Le serpent ç un corp qui prend le corp que je fournis à ma fonction constructeur.
+            this.direction = direction;
+            this.ateApple = false;
+        }
+
+        draw(){  // Va déssiner le corp du serpent.
             ctx.save();         // Je sauvegarde son contenu de comme il était avant.
             ctx.fillStyle = "#ff0000";
             for(let i = 0; i < this.body.length; i++){
@@ -142,7 +145,7 @@ window.onload = () => {  // window.onload => Permet de lancer la fonction lorsqu
             ctx.restore();      // Permet de le remettre comme i létait avant.
         };
 
-        this.advance = function(){
+        advance(){
             const nextPosition = this.body[0].slice();    // Slice => permet de copier un élément
             switch(this.direction){
                 case "left":
@@ -166,7 +169,7 @@ window.onload = () => {  // window.onload => Permet de lancer la fonction lorsqu
             else
                 this.eatApple = false;
         };
-        this.setDirection = function(newDirection){
+        setDirection(newDirection){
             let allowedDirections;
             switch(this.direction){
                 case "left":
@@ -184,7 +187,7 @@ window.onload = () => {  // window.onload => Permet de lancer la fonction lorsqu
                 this.direction = newDirection;
             }
         };
-        this.checkCollision = function(){
+        checkCollision(){
             let wallCollision = false;
             let snakeCollision = false;
             const head = this.body[0];
@@ -208,7 +211,7 @@ window.onload = () => {  // window.onload => Permet de lancer la fonction lorsqu
             }
             return wallCollision || snakeCollision;
         };
-        this.isEatingApple = function(appleToEat){
+        isEatingApple(appleToEat){
             const head = this.body[0];
             if(head[0] === appleToEat.position[0] && head[1] === appleToEat.position[1])
                 return true;
@@ -217,10 +220,12 @@ window.onload = () => {  // window.onload => Permet de lancer la fonction lorsqu
         };
     }
 
-    function Apple(position){
-        this.position = position;
+    class Apple {
+        constructor(position) {
+            this.position = position;
+        }
 
-        this.draw = function(){
+        draw(){
             const radius = blockSize/2;
             const x = this.position[0]*blockSize + radius;
             const y = this.position[1]*blockSize + radius;
@@ -235,13 +240,13 @@ window.onload = () => {  // window.onload => Permet de lancer la fonction lorsqu
 
             ctx.restore();
         };
-        this.setNewPosition = function(){
+        setNewPosition(){
             // l'objet Math et la fonction random permet de donner un chiffre aléatoire entre 0 et 1 sauf que moi je veux entre 0 et le nombre de block qu'il y a dans la largeur -1. Mais ça peut me donner un nombre à virgure et ça je ne veux pas, je veux des chiffres entier donc il faut utiliser l'objet Math et la fonction round
             const newX = Math.round(Math.random()*(widthInBlocks-1));
             const newY = Math.round(Math.random()*(heightInBlocks-1));
             this.position = [newX, newY];
         };
-        this.isOnSnake = function(snakeToCheck){
+        isOnSnake(snakeToCheck){
             let isOnSnake = false;
             for(let i = 0 ; i < snakeToCheck.body.length ; i++){
                 if(this.position[0] === snakeToCheck.body[i][0] && this.position[1] === snakeToCheck.body[i][1]){
@@ -250,7 +255,6 @@ window.onload = () => {  // window.onload => Permet de lancer la fonction lorsqu
             }
             return isOnSnake;
         };
-        
     }
 
     document.onkeydown = (e) => {
